@@ -26,7 +26,7 @@ jobs:
         with: {node-version: 24}
       - run: python3 scripts/sync-i18n.py --check
       - run: node --test tests/i18n.test.cjs
-      - uses: dtolnay/rust-toolchain@1.91.1
+      - uses: dtolnay/rust-toolchain@1.120.0
         with:
           components: rustfmt, clippy
       - uses: Swatinem/rust-cache@v2
@@ -95,7 +95,7 @@ jobs:
       - uses: actions/setup-python@v5
         with: {python-version: '3.12'}
       - run: python scripts/check-repository.py
-      - uses: dtolnay/rust-toolchain@1.91.1
+      - uses: dtolnay/rust-toolchain@1.120.0
       - uses: actions/setup-node@v4
         with:
           node-version: 24
