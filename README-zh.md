@@ -1,6 +1,6 @@
 # HolePunch
 
-<img src="docs/assets/logo.svg" alt="HolePunch 标志" width="96">
+<img src="docs/assets/logo.png" alt="HolePunch 标志" width="96">
 
 [![许可证：Apache-2.0](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](LICENSE)
 ![Rust 1.91.1+](https://img.shields.io/badge/Rust-1.91.1%2B-orange.svg)
@@ -134,4 +134,4 @@ cargo test --workspace --locked
 
 HolePunch 采用 [Apache-2.0](LICENSE)。第三方组件保留各自的许可证，详见[第三方声明](docs/zh-CN/NOTICE.md)。感谢 rathole、Caddy 和 Tauri 社区提供的基础组件。
 
-<!-- translation-source: README.md; source-sha256: 3c6f4ffa23b0fe3c69cd1c1c4818a3a1f228ea6cb187e35119ecf1daf46a5e1c -->
+<!-- translation-source: README.md; source-sha256: 23b3e84f447b672eb9bb640d50049db6852b317f24ed940eb958f01f4da9e0a6 -->

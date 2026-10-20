@@ -23,4 +23,17 @@ npm run build --prefix apps/desktop
 
 发布工作流默认构建服务端/CLI 归档，只有 `include_desktop` 才构建桌面安装器。桌面维护在本 Apache-2.0 仓库，见[版本边界](EDITIONS.md)。
 
-<!-- translation-source: apps/desktop/README.md; source-sha256: 6d90e5dd84c2bed30eea4a812eaa942f387875d25534268f1a078fceb8df9da6 -->
+## 品牌资源
+
+[标志源文件](../assets/logo.png)表达“连接穿过孔洞”的含义。荧光绿图形和深灰底色由两个项目、浏览器控制台与桌面应用共同使用。源 PNG 的外侧圆角区域透明，按仓库的 Apache-2.0 协议分发。
+
+替换源文件后，使用已安装的 Tauri CLI 重新生成需要提交的 PNG、ICO 和 ICNS 资源：
+
+```sh
+npm ci --prefix apps/desktop
+python3 scripts/sync-icons.py
+```
+
+脚本仅保留桌面端和浏览器需要的资源。桌面构建会自动将 `web/logo.png` 复制到界面目录。重新构建服务端与桌面应用即可嵌入更新后的图标。更新 Cloud 的核心子模块时，也应将同一份源文件复制到 Cloud 仓库的 `docs/assets/logo.png`。
+
+<!-- translation-source: apps/desktop/README.md; source-sha256: e629a111207731eb409b29ccdec82ccc3956a8b0a34d3fefcc45a57d8f270f51 -->

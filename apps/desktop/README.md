@@ -22,3 +22,16 @@ English is the default. The language selector persists English or Simplified Chi
 Closing the window keeps the app in the tray. Quitting terminates the client child process. Autostart requires explicit opt-in; restoring a binding does not automatically start tunnels. Distribution still requires target-platform verification, signing, and macOS notarization.
 
 Release workflows build server/CLI archives by default and desktop installers only with `include_desktop`. Desktop is maintained in this Apache-2.0 repository; see [EDITIONS](../../docs/EDITIONS.md).
+
+## Brand assets
+
+The [master logo](../../docs/assets/logo.png) represents a connection passing through an open portal. Its lime mark and charcoal background are shared by both products, the browser console, and the desktop app. The master PNG has transparent outer corners and is distributed under the repository's Apache-2.0 license.
+
+After replacing the master, regenerate the committed PNG, ICO, and ICNS assets with the installed Tauri CLI:
+
+```sh
+npm ci --prefix apps/desktop
+python3 scripts/sync-icons.py
+```
+
+The script keeps only the required desktop and browser assets. The desktop build copies `web/logo.png` into its UI automatically. Rebuild the server and desktop app to embed updated icons. Copy the same master into the Cloud repository's `docs/assets/logo.png` when updating its core submodule.

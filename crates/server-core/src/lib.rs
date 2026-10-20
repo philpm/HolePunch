@@ -442,7 +442,24 @@ pub fn router_with_routes(app: App, extra: Router<App>) -> Router {
                 )
             }),
         )
-        .route("/favicon.ico", get(|| async { StatusCode::NO_CONTENT }))
+        .route(
+            "/logo.png",
+            get(|| async {
+                (
+                    [(header::CONTENT_TYPE, "image/png")],
+                    include_bytes!("../../../web/logo.png").as_slice(),
+                )
+            }),
+        )
+        .route(
+            "/favicon.ico",
+            get(|| async {
+                (
+                    [(header::CONTENT_TYPE, "image/x-icon")],
+                    include_bytes!("../../../web/favicon.ico").as_slice(),
+                )
+            }),
+        )
         .route("/healthz", get(|| async { Json(json!({"status":"ok"})) }))
         .route("/readyz", get(ready))
         .route("/api/v1/audit", get(audit))

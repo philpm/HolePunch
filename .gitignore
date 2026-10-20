@@ -15,9 +15,10 @@ __pycache__/
 # Generated Tauri schemas
 /apps/desktop/src-tauri/gen/
 
-# Shared UI locale assets copied by the desktop build script
+# Shared UI assets copied by the desktop build script
 /apps/desktop/ui/i18n.js
 /apps/desktop/ui/locales/
+/apps/desktop/ui/logo.png
 
 # Initial deployment access summaries contain credentials.
 *.access.txt
