@@ -1,0 +1,24 @@
+name: Bug report
+description: Report a reproducible problem without credentials.
+body:
+  - type: markdown
+    attributes:
+      value: "Do not upload environment files, databases, generated TOML, or access tokens. Check node diagnostics and client logs first."
+  - type: input
+    id: version
+    attributes: {label: Version, placeholder: "0.4.0-dev.1"}
+    validations: {required: true}
+  - type: textarea
+    id: environment
+    attributes: {label: "OS, architecture, and deployment method"}
+    validations: {required: true}
+  - type: textarea
+    id: reproduce
+    attributes: {label: "Steps, expected behavior, and actual behavior"}
+    validations: {required: true}
+  - type: textarea
+    id: evidence
+    attributes: {label: Redacted diagnostics and logs}
+  - type: input
+    id: locale
+    attributes: {label: Interface language, placeholder: "English (en), Simplified Chinese (zh-CN), or CLI"}

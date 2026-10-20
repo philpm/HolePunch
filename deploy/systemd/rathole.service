@@ -1,0 +1,16 @@
+[Unit]
+Description=HolePunch rathole data plane
+After=holepunch-center.service network-online.target
+Wants=holepunch-center.service
+[Service]
+User=holepunch
+Group=holepunch
+ExecStart=/usr/local/bin/rathole --server /var/lib/holepunch/server.toml
+Restart=on-failure
+RestartSec=3
+NoNewPrivileges=yes
+ProtectSystem=strict
+ProtectHome=yes
+PrivateTmp=yes
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,24 @@
+[Unit]
+Description=HolePunch headless client
+After=network-online.target
+Wants=network-online.target
+[Service]
+User=holepunch
+Group=holepunch
+EnvironmentFile=/etc/holepunch/client.env
+Environment=HP_CLIENT_DATA=/var/lib/holepunch-client
+Environment=HP_RATHOLE_BIN=/usr/local/bin/rathole
+ExecStart=/usr/local/bin/holepunch-client
+Restart=on-failure
+RestartSec=10
+StateDirectory=holepunch-client
+StateDirectoryMode=0700
+UMask=0077
+NoNewPrivileges=yes
+PrivateTmp=yes
+ProtectSystem=strict
+ProtectHome=yes
+ReadWritePaths=/var/lib/holepunch-client
+TimeoutStopSec=20
+[Install]
+WantedBy=multi-user.target

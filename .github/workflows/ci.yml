@@ -1,0 +1,110 @@
+name: CI
+on: [push, pull_request]
+permissions:
+  contents: read
+jobs:
+  deployment-tools:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-22.04, macos-15, windows-2022]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.12'}
+      - run: python scripts/check-repository.py
+      - run: python -m unittest discover -s tests -p 'test_*.py' -v
+  center:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.12'}
+      - run: python scripts/check-repository.py
+      - uses: actions/setup-node@v4
+        with: {node-version: 24}
+      - run: python3 scripts/sync-i18n.py --check
+      - run: node --test tests/i18n.test.cjs
+      - uses: dtolnay/rust-toolchain@1.91.1
+        with:
+          components: rustfmt, clippy
+      - uses: Swatinem/rust-cache@v2
+      - run: cargo fmt --all -- --check
+      - run: cargo clippy --workspace --all-targets --locked -- -D warnings
+      - run: cargo test --workspace --locked
+      - run: cargo build --locked -p holepunch-server -p holepunch-cli
+      - run: python scripts/audit-dependencies.py --allow-informational
+      - run: docker compose --env-file tests/compose.env config --quiet
+      - name: Validate release Compose configuration
+        run: docker compose --env-file tests/compose.env -f deploy/compose.release.yml config --quiet
+        env:
+          HP_IMAGE_PREFIX: example.invalid/holepunch
+          HP_VERSION: ci-validation
+      - run: docker compose -p holepunch-ci --env-file tests/compose.env build
+      - name: Real TCP, UDP, HTTPS and recovery integration
+        run: |
+          cargo build --workspace --locked
+          mkdir -p output/tools
+          docker pull caddy:2.11.4
+          caddy_id=$(docker create caddy:2.11.4)
+          docker cp "$caddy_id:/usr/bin/caddy" output/tools/caddy
+          docker rm "$caddy_id"
+          rathole_id=$(docker create holepunch-ci-rathole)
+          docker cp "$rathole_id:/usr/local/bin/rathole" output/tools/rathole
+          docker rm "$rathole_id"
+          chmod +x output/tools/caddy output/tools/rathole
+          python3 tests/smoke-native.py --bin-dir target/debug --caddy output/tools/caddy --rathole output/tools/rathole
+          python3 scripts/e2e.py --caddy output/tools/caddy --rathole output/tools/rathole
+          python3 scripts/e2e-selfhost.py --caddy output/tools/caddy --rathole output/tools/rathole
+      - name: Compose runtime, restart and backup smoke
+        run: |
+          set -euo pipefail
+          compose() { docker compose -p holepunch-ci --env-file tests/compose.env "$@"; }
+          ready() {
+            for attempt in $(seq 1 60); do
+              if compose exec -T center curl -fsS http://127.0.0.1:3000/readyz; then return 0; fi
+              sleep 1
+            done
+            compose logs --tail=80
+            return 1
+          }
+          compose up -d --wait
+          ready
+          compose exec -T center holepunch-center backup /data/ci-backup.db
+          if compose exec -T center holepunch-center restore /data/ci-backup.db; then
+            echo 'restore must refuse a running Center'
+            exit 1
+          fi
+          compose restart caddy rathole
+          ready
+          compose stop center
+          compose run --rm --no-deps center restore /data/ci-backup.db
+          compose up -d --wait
+          ready
+      - if: always()
+        run: docker compose -p holepunch-ci --env-file tests/compose.env down -v
+  desktop:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [macos-latest, windows-latest, ubuntu-22.04]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.12'}
+      - run: python scripts/check-repository.py
+      - uses: dtolnay/rust-toolchain@1.91.1
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - if: runner.os == 'Linux'
+        run: sudo apt-get update && sudo apt-get install -y libwebkit2gtk-4.1-dev libappindicator3-dev librsvg2-dev patchelf libdbus-1-dev
+      - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: apps/desktop/src-tauri -> target
+      - shell: bash
+        run: ./scripts/prepare-sidecar.sh
+      - run: npm ci --prefix apps/desktop
+      - run: npm run build --prefix apps/desktop -- --no-bundle

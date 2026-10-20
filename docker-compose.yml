@@ -1,0 +1,74 @@
+# Linux host networking: Web upstreams remain on loopback; admin APIs are not published.
+x-logging: &bounded-logs
+  driver: json-file
+  options:
+    max-size: "10m"
+    max-file: "3"
+services:
+  center:
+    logging: *bounded-logs
+    read_only: true
+    tmpfs: [/tmp]
+    build:
+      context: .
+    restart: unless-stopped
+    network_mode: host
+    environment:
+      HP_ADMIN_TOKEN: ${HP_ADMIN_TOKEN:?Run python3 scripts/setup.py first}
+      HP_PUBLIC_ADDR: ${HP_PUBLIC_ADDR:?Set the public server host:2333}
+      HP_BOOTSTRAP_EMAIL: ${HP_BOOTSTRAP_EMAIL:-}
+      HP_BOOTSTRAP_PASSWORD: ${HP_BOOTSTRAP_PASSWORD:-}
+      HP_PANEL_DOMAIN: ${HP_PANEL_DOMAIN:-}
+      HP_DATA_DIR: /data
+      HP_BIND: ${HP_BIND:-127.0.0.1:3000}
+      HP_RATHOLE_BIND: ${HP_RATHOLE_BIND:-0.0.0.0:2333}
+      HP_CADDY_URL: ${HP_CADDY_URL:-http://127.0.0.1:2019}
+      HP_CADDY_LISTEN: ${HP_CADDY_LISTEN:-127.0.0.1:2019}
+      HP_TLS_ASK_URL: ${HP_TLS_ASK_URL:-http://127.0.0.1:3000/api/v1/tls/check}
+      HP_HTTP_PORT: ${HP_HTTP_PORT:-80}
+      HP_HTTPS_LISTEN: ${HP_HTTPS_LISTEN:-:443}
+      HP_PORT_START: ${HP_PORT_START:-20000}
+      HP_PORT_END: ${HP_PORT_END:-20100}
+    volumes:
+      - holepunch-data:/data
+    healthcheck:
+      test: [CMD-SHELL, 'curl -fsS http://$$HP_BIND/healthz']
+      interval: 5s
+      timeout: 3s
+      retries: 12
+    security_opt: [no-new-privileges:true]
+    cap_drop: [ALL]
+  caddy:
+    logging: *bounded-logs
+    read_only: true
+    tmpfs: [/tmp]
+    image: caddy:2.11.4
+    restart: unless-stopped
+    network_mode: host
+    volumes:
+      - ./deploy/bootstrap.Caddyfile:/etc/caddy/bootstrap.Caddyfile:ro
+      - caddy-data:/data
+      - caddy-config:/config
+    environment:
+      HP_CADDY_PORT: ${HP_CADDY_PORT:-2019}
+    command: [caddy, run, --config, /etc/caddy/bootstrap.Caddyfile, --adapter, caddyfile]
+  rathole:
+    logging: *bounded-logs
+    read_only: true
+    tmpfs: [/tmp]
+    build:
+      context: .
+      dockerfile: deploy/rathole.Dockerfile
+    restart: unless-stopped
+    network_mode: host
+    depends_on:
+      center:
+        condition: service_healthy
+    volumes:
+      - holepunch-data:/data:ro
+    security_opt: [no-new-privileges:true]
+    cap_drop: [ALL]
+volumes:
+  holepunch-data:
+  caddy-data:
+  caddy-config:

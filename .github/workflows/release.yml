@@ -1,0 +1,87 @@
+name: Release candidate artifacts
+on:
+  workflow_dispatch:
+    inputs:
+      include_desktop:
+        description: Build optional experimental desktop installers
+        type: boolean
+        default: false
+permissions:
+  contents: read
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  native:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - {os: ubuntu-22.04, target: x86_64-unknown-linux-gnu, bundles: deb, ext: ''}
+          - {os: ubuntu-24.04-arm, target: aarch64-unknown-linux-gnu, bundles: deb, ext: ''}
+          - {os: macos-15, target: aarch64-apple-darwin, bundles: dmg, ext: ''}
+          - {os: macos-15-intel, target: x86_64-apple-darwin, bundles: dmg, ext: ''}
+          - {os: windows-2022, target: x86_64-pc-windows-msvc, bundles: nsis, ext: '.exe'}
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@1.91.1
+      - uses: actions/setup-node@v4
+        with: {node-version: 24}
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.12'}
+      - run: python scripts/check-repository.py
+      - if: runner.os == 'Linux'
+        run: sudo apt-get update && sudo apt-get install -y libwebkit2gtk-4.1-dev libappindicator3-dev librsvg2-dev patchelf libdbus-1-dev libssl-dev
+      - uses: Swatinem/rust-cache@v2
+      - run: python -m unittest discover -s tests -p 'test_*.py' -v
+      - run: python scripts/sync-i18n.py --check
+      - run: node --test tests/i18n.test.cjs
+      - run: cargo test --workspace --locked
+      - run: python scripts/audit-dependencies.py --allow-informational
+      - run: cargo build --workspace --release --locked
+      - run: python scripts/build-rathole.py ${{ matrix.target }}
+      - if: inputs.include_desktop
+        run: npm ci --prefix apps/desktop
+      - if: inputs.include_desktop
+        run: npm run build --prefix apps/desktop -- --bundles ${{ matrix.bundles }}
+      - name: Portable binaries and third-party inventory
+        run: python scripts/package.py --target ${{ matrix.target }} --bin-dir target/release --rathole apps/desktop/src-tauri/binaries/holepunch-rathole-${{ matrix.target }}${{ matrix.ext }} --out dist
+      - name: Collect installers and checksums
+        if: inputs.include_desktop
+        shell: python
+        run: |
+          import pathlib, shutil, hashlib
+          dest=pathlib.Path('dist')
+          for path in pathlib.Path('apps/desktop/src-tauri/target/release/bundle').rglob('*'):
+            if path.suffix in ('.dmg','.deb','.exe','.msi') and path.is_file():
+              target=dest/path.name
+              shutil.copy2(path,target)
+              (dest/(path.name+'.sha256')).write_text(hashlib.sha256(target.read_bytes()).hexdigest()+'  '+target.name+'\n')
+      - uses: actions/upload-artifact@v4
+        with:
+          name: holepunch-${{ matrix.target }}
+          path: dist/*
+          if-no-files-found: error
+          retention-days: 30
+  images:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix: {component: [center, rathole]}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: docker/setup-buildx-action@v3
+      - uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: ${{ matrix.component == 'center' && 'Dockerfile' || 'deploy/rathole.Dockerfile' }}
+          platforms: linux/amd64
+          push: false
+          tags: holepunch-${{ matrix.component }}:rc
+          outputs: type=oci,dest=/tmp/holepunch-${{ matrix.component }}.tar
+          sbom: true
+          provenance: mode=max
+      - uses: actions/upload-artifact@v4
+        with:
+          name: image-${{ matrix.component }}-amd64
+          path: /tmp/holepunch-${{ matrix.component }}.tar

@@ -1,0 +1,20 @@
+[package]
+name = "holepunch-cli"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+rust-version.workspace = true
+repository.workspace = true
+[[bin]]
+name = "holepunch-client"
+path = "src/main.rs"
+[dependencies]
+holepunch-client = { path = "../../crates/client-core" }
+anyhow = "1"
+clap = { version = "4", features = ["derive"] }
+fs2 = "0.4"
+reqwest = { version = "0.12", default-features = false, features = ["json", "rustls-tls"] }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+tokio = { version = "1", features = ["full"] }
+toml = "0.8"

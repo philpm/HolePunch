@@ -1,0 +1,24 @@
+[Unit]
+Description=HolePunch dedicated HTTPS edge
+After=network-online.target
+Wants=network-online.target
+[Service]
+User=hpcaddy
+Group=hpcaddy
+Environment=XDG_DATA_HOME=/var/lib/holepunch-caddy/data
+Environment=XDG_CONFIG_HOME=/var/lib/holepunch-caddy/config
+ExecStart=/usr/local/bin/caddy run --config /etc/holepunch-caddy/bootstrap.json
+Restart=on-failure
+RestartSec=3
+TimeoutStopSec=20
+LimitNOFILE=1048576
+AmbientCapabilities=CAP_NET_BIND_SERVICE
+CapabilityBoundingSet=CAP_NET_BIND_SERVICE
+NoNewPrivileges=yes
+PrivateTmp=yes
+ProtectSystem=strict
+ProtectHome=yes
+ReadWritePaths=/var/lib/holepunch-caddy
+UMask=0077
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,23 @@
+[Unit]
+Description=HolePunch control center
+After=network-online.target
+Wants=network-online.target
+[Service]
+User=holepunch
+Group=holepunch
+EnvironmentFile=/etc/holepunch/center.env
+Environment=HP_DATA_DIR=/var/lib/holepunch
+ExecStart=/usr/local/bin/holepunch-center
+Restart=on-failure
+RestartSec=3
+StateDirectory=holepunch
+StateDirectoryMode=0700
+UMask=0077
+NoNewPrivileges=yes
+PrivateTmp=yes
+ProtectSystem=strict
+ProtectHome=yes
+ReadWritePaths=/var/lib/holepunch
+TimeoutStopSec=20
+[Install]
+WantedBy=multi-user.target

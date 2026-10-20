@@ -1,0 +1,11 @@
+[package]
+name = "holepunch-server"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+rust-version.workspace = true
+repository.workspace = true
+[dependencies]
+holepunch-server-core = { path = "../../crates/server-core" }
+anyhow = "1"
+tokio = { version = "1", features = ["full"] }

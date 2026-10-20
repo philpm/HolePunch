@@ -1,0 +1,36 @@
+/target/
+/apps/desktop/src-tauri/target/
+/node_modules/
+/apps/desktop/node_modules/
+/data/
+.env
+/output/
+.DS_Store
+/apps/desktop/src-tauri/binaries/*
+/.playwright-cli/
+__pycache__/
+*.pyc
+/dist/
+
+# Generated Tauri schemas
+/apps/desktop/src-tauri/gen/
+
+# Shared UI locale assets copied by the desktop build script
+/apps/desktop/ui/i18n.js
+/apps/desktop/ui/locales/
+
+# Initial deployment access summaries contain credentials.
+*.access.txt
+
+# Local configuration, secrets, and operational evidence.
+.env.*
+!.env.example
+*.db
+*.db-*
+*.sqlite
+*.sqlite3
+*.sqlite3-*
+*.log
+*.pem
+*.key
+/private/

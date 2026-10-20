@@ -1,0 +1,69 @@
+# Generate .env first. Set HP_IMAGE_PREFIX to your published registry/repository prefix.
+# This file deliberately has no imaginary default registry.
+x-logging: &logs
+  driver: json-file
+  options: {max-size: "10m", max-file: "3"}
+services:
+  center:
+    image: ${HP_IMAGE_PREFIX:?Set the verified image prefix}-center:${HP_VERSION:?Pin a release tag}
+    restart: unless-stopped
+    network_mode: host
+    read_only: true
+    tmpfs: [/tmp]
+    logging: *logs
+    user: "10001:10001"
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    environment:
+      HP_ADMIN_TOKEN: ${HP_ADMIN_TOKEN:?Required}
+      HP_BOOTSTRAP_EMAIL: ${HP_BOOTSTRAP_EMAIL:?Run scripts/setup.py first}
+      HP_BOOTSTRAP_PASSWORD: ${HP_BOOTSTRAP_PASSWORD:?Run scripts/setup.py first}
+      HP_PUBLIC_ADDR: ${HP_PUBLIC_ADDR:?Required}
+      HP_PANEL_DOMAIN: ${HP_PANEL_DOMAIN:-}
+      HP_BIND: ${HP_BIND:-127.0.0.1:3000}
+      HP_DATA_DIR: /data
+      HP_RATHOLE_BIND: ${HP_RATHOLE_BIND:-0.0.0.0:2333}
+      HP_CADDY_URL: ${HP_CADDY_URL:-http://127.0.0.1:2019}
+      HP_CADDY_LISTEN: ${HP_CADDY_LISTEN:-127.0.0.1:2019}
+      HP_TLS_ASK_URL: ${HP_TLS_ASK_URL:-http://127.0.0.1:3000/api/v1/tls/check}
+      HP_HTTP_PORT: ${HP_HTTP_PORT:-80}
+      HP_HTTPS_LISTEN: ${HP_HTTPS_LISTEN:-:443}
+      HP_PORT_START: ${HP_PORT_START:-20000}
+      HP_PORT_END: ${HP_PORT_END:-20100}
+    volumes: [holepunch-data:/data]
+    healthcheck:
+      test: [CMD-SHELL, 'curl -fsS http://$$HP_BIND/healthz']
+      interval: 5s
+      timeout: 3s
+      retries: 12
+  caddy:
+    image: caddy:2.11.4
+    restart: unless-stopped
+    network_mode: host
+    read_only: true
+    tmpfs: [/tmp]
+    logging: *logs
+    volumes:
+      - ./bootstrap.Caddyfile:/etc/caddy/bootstrap.Caddyfile:ro
+      - caddy-data:/data
+      - caddy-config:/config
+    environment:
+      HP_CADDY_PORT: ${HP_CADDY_PORT:-2019}
+    command: [caddy, run, --config, /etc/caddy/bootstrap.Caddyfile, --adapter, caddyfile]
+  rathole:
+    image: ${HP_IMAGE_PREFIX:?Set the verified image prefix}-rathole:${HP_VERSION:?Pin a release tag}
+    restart: unless-stopped
+    network_mode: host
+    read_only: true
+    tmpfs: [/tmp]
+    logging: *logs
+    user: "10001:10001"
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    depends_on:
+      center: {condition: service_healthy}
+    volumes: [holepunch-data:/data:ro]
+volumes:
+  holepunch-data:
+  caddy-data:
+  caddy-config:

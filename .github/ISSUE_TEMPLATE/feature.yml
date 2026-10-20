@@ -1,0 +1,14 @@
+name: Feature request
+description: Propose a focused improvement or a new translation.
+body:
+  - type: textarea
+    id: problem
+    attributes: {label: Problem or use case}
+    validations: {required: true}
+  - type: textarea
+    id: proposal
+    attributes: {label: Proposed behavior and alternatives}
+    validations: {required: true}
+  - type: input
+    id: locale
+    attributes: {label: Language or accessibility needs, placeholder: "Optional; use a BCP 47 locale code for translations"}

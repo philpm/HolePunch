@@ -1,0 +1,21 @@
+[workspace]
+members = ["crates/server-core", "crates/client-core", "apps/selfhost", "apps/cli"]
+default-members = ["apps/selfhost", "apps/cli"]
+exclude = ["apps/desktop/src-tauri"]
+resolver = "2"
+[workspace.package]
+version = "0.4.0-dev.1"
+edition = "2021"
+license = "Apache-2.0"
+rust-version = "1.91.1"
+repository = "https://github.com/philpm/HolePunch"
+[profile.release]
+lto = true
+codegen-units = 1
+strip = true
+[profile.dev]
+debug = 0
+incremental = false
+[profile.test]
+debug = 0
+incremental = false
