@@ -25,7 +25,7 @@ Release workflows build server/CLI archives by default and desktop installers on
 
 ## Brand assets
 
-The [master logo](../../docs/assets/logo.png) represents a connection passing through an open portal. Its lime mark and charcoal background are shared by both products, the browser console, and the desktop app. The master PNG has transparent outer corners and is distributed under the repository's Apache-2.0 license.
+The [master logo](../../docs/assets/logo.png) represents two network nodes connected through a circular barrier, with diagonal strokes suggesting traversal. Its olive-green mark and white background are shared by both products, the browser console, and the desktop app. The master is a 1024 × 1024 PNG with an opaque square background, distributed under the repository's Apache-2.0 license.
 
 After replacing the master, regenerate the committed PNG, ICO, and ICNS assets with the installed Tauri CLI:
 
