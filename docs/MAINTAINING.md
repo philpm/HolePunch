@@ -1,5 +1,7 @@
 # Maintaining the public repository
 
+[English](MAINTAINING.md) | [简体中文](zh-CN/MAINTAINING.md)
+
 `main` is the public integration branch. Use focused feature branches and pull requests; require passing CI and review before merging. Keep releases tied to immutable tags and a clean, tested checkout. See [Contributing](../CONTRIBUTING.md), [Testing](TESTING.md), and [Release](RELEASE.md).
 
 ## Public and local material

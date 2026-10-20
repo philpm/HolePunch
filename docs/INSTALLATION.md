@@ -1,5 +1,7 @@
 # Install HolePunch
 
+[English](INSTALLATION.md) | [简体中文](zh-CN/INSTALLATION.md)
+
 Choose one of three paths. They run the same Self-hosted server, embedded web console, patched rathole and dedicated Caddy instance. Docker, Node.js, an external database and the desktop app are not required for a native server.
 
 | Path | Best for | Requirements |

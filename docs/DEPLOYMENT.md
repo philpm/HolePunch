@@ -1,5 +1,7 @@
 # Deployment and operations
 
+[English](DEPLOYMENT.md) | [简体中文](zh-CN/DEPLOYMENT.md)
+
 Start with [the three installation paths](INSTALLATION.md): interactive native installation, clone/build/run, or Docker Compose. This guide covers runtime configuration and operations. The installer-managed systemd unit is `holepunch.service`; the three separate units below are advanced manual templates. Use one process-management approach per installation.
 
 This repository builds Self-hosted and the shared CLI with database schema 4. Cloud lives in a separate Apache-2.0 repository; see [boundaries](EDITIONS.md). On first start, initialize one administrator through `HP_BOOTSTRAP_EMAIL` and `HP_BOOTSTRAP_PASSWORD`. Self-hosted has no registration or SMTP service. Back up existing data before upgrading; a Cloud data directory cannot be opened directly.

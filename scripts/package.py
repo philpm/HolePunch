@@ -22,7 +22,7 @@ def main(edition="selfhost", shared_root=None, extra_files=None):
     with tempfile.TemporaryDirectory() as tmp:
         stage=Path(tmp)/name;stage.mkdir();(stage/'bin').mkdir()
         for src,name_ in zip(required,['holepunch-center','holepunch-client','rathole']):shutil.copy2(src,stage/'bin'/(name_+ext))
-        for file in ['LICENSE','NOTICE.md','README.md','SECURITY.md','CHANGELOG.md','CONTRIBUTING.md','CODE_OF_CONDUCT.md','SUPPORT.md']:
+        for file in ['LICENSE','NOTICE.md','README.md','README-zh.md','SECURITY.md','CHANGELOG.md','CONTRIBUTING.md','CODE_OF_CONDUCT.md','SUPPORT.md']:
             shutil.copy2((ROOT/file if (ROOT/file).exists() else shared/file),stage/file)
         shutil.copytree(ROOT/'docs',stage/'docs')
         # Cloud guides link to the pinned core's documentation. Ship those texts
@@ -31,7 +31,7 @@ def main(edition="selfhost", shared_root=None, extra_files=None):
             shared_docs = stage/'vendor/holepunch'
             shared_docs.mkdir(parents=True)
             shutil.copytree(shared/'docs',shared_docs/'docs')
-            for file in ['LICENSE','NOTICE.md','README.md','SECURITY.md','CHANGELOG.md','CONTRIBUTING.md','CODE_OF_CONDUCT.md','SUPPORT.md']:
+            for file in ['LICENSE','NOTICE.md','README.md','README-zh.md','SECURITY.md','CHANGELOG.md','CONTRIBUTING.md','CODE_OF_CONDUCT.md','SUPPORT.md']:
                 shutil.copy2(shared/file,shared_docs/file)
         else:
             shared_docs = stage

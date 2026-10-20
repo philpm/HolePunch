@@ -1,5 +1,7 @@
 # Self-hosted roadmap
 
+[English](ROADMAP.md) | [简体中文](zh-CN/ROADMAP.md)
+
 See [EDITIONS](EDITIONS.md) for product boundaries. Cloud application plans belong in its own repository. Production operations and customer data stay outside Git.
 
 ## Implemented locally

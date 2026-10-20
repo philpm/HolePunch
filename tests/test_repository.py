@@ -1,5 +1,6 @@
 """Regression coverage for public repository hygiene without real credentials."""
 import importlib.util
+import hashlib
 from pathlib import Path
 import tempfile
 import unittest
@@ -63,6 +64,23 @@ class RepositoryTests(unittest.TestCase):
             (root / ".env").write_text("local-only\n")
             errors = self.scan(root, ["README.md", "vendor/core", "deleted.md"])
             self.assertEqual(errors, [])
+
+    def test_translation_revision_requires_review_after_source_changes(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory).resolve()
+            self.prepare(root)
+            source = root / "README.md"
+            translation = root / "README-zh.md"
+            digest = hashlib.sha256(source.read_bytes()).hexdigest()
+            translation.write_text(
+                "# Translated guide\n\n"
+                f"<!-- translation-source: README.md; source-sha256: {digest} -->\n"
+            )
+            self.assertEqual(self.scan(root, ["README.md", "README-zh.md"]), [])
+            source.write_text("# Updated behavior\n")
+            self.assertTrue(any("English source changed" in e for e in self.scan(root, ["README-zh.md"])))
+            translation.write_text("# Missing source revision\n")
+            self.assertTrue(any("missing translation source" in e for e in self.scan(root, ["README-zh.md"])))
 
 
 if __name__ == "__main__":

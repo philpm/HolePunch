@@ -1,5 +1,7 @@
 # Self-hosted release guide
 
+[English](RELEASE.md) | [简体中文](zh-CN/RELEASE.md)
+
 Core/CLI version: **0.4.0-dev.1**. Desktop version: **0.2.0-rc.2**, maintained independently. These are development builds; signed installers and public images have not been released. See [testing](TESTING.md) for evidence and the [roadmap](ROADMAP.md) for outstanding work.
 
 ## Native archives
@@ -12,7 +14,7 @@ cargo build --release --locked -p holepunch-server -p holepunch-cli
 python3 scripts/package.py --target aarch64-apple-darwin --bin-dir target/release --rathole output/tools/rathole --out dist
 ```
 
-Outputs are `holepunch-selfhost-<version>-<target>.tar.gz` (zip on Windows) and `.sha256`. Archives contain server, CLI, rathole, the portable installer/runner, shared `access.py` summary helper, standalone `setup.py`/`compose.py` launch tools and shell/PowerShell entry points, release Compose and Caddy bootstrap files, English documentation, systemd templates, license inventories, and build metadata. Caddy is downloaded and checksum-verified by the installer or supplied with `--caddy`; desktop is separate.
+Outputs are `holepunch-selfhost-<version>-<target>.tar.gz` (zip on Windows) and `.sha256`. Archives contain server, CLI, rathole, the portable installer/runner, shared `access.py` summary helper, standalone `setup.py`/`compose.py` launch tools and shell/PowerShell entry points, release Compose and Caddy bootstrap files, English/Simplified Chinese documentation, systemd templates, license inventories, and build metadata. Caddy is downloaded and checksum-verified by the installer or supplied with `--caddy`; desktop is separate.
 
 The archived server uses the compatibility installation name `bin/holepunch-center` but is built from `holepunch-server`. `BUILD.json` records edition, schema, public core revision, and version; do not infer the product from the executable name alone. Release from a clean committed checkout so recorded revision and content agree.
 

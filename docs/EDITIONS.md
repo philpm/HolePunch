@@ -1,5 +1,7 @@
 # Repository and product boundaries
 
+[English](EDITIONS.md) | [简体中文](zh-CN/EDITIONS.md)
+
 HolePunch targets self-hosting. Cloud is a separate open-source product with independent commits, tests, and releases. Both projects are licensed under Apache-2.0.
 
 | Repository | Contents |

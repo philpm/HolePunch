@@ -1,5 +1,7 @@
 # Documentation
 
+[English](README.md) | [简体中文](zh-CN/README.md)
+
 These guides describe the current Self-hosted development build. English is authoritative. The guides describe supported behavior and repeatable validation; internal acceptance diaries are excluded.
 
 | Task | Guide |

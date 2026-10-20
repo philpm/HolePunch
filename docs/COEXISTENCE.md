@@ -1,5 +1,7 @@
 # Sharing a VPS with other websites
 
+[English](COEXISTENCE.md) | [简体中文](zh-CN/COEXISTENCE.md)
+
 Use **Local websites** in the console to publish applications on the same server. Caddy manages HTTPS for the panel, web tunnels, and local websites. Local websites bypass the client and rathole, so they continue working after client revocation.
 
 ## Recommended layout for a new server

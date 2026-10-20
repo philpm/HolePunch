@@ -1,5 +1,7 @@
 # Development and testing
 
+[English](DEVELOPMENT.md) | [简体中文](zh-CN/DEVELOPMENT.md)
+
 ## Toolchain and builds
 
 Use Rust 1.91.1+, Python 3, and C/C++ build tools. Web assets are embedded with `include_str!`; rebuild the server after editing them. Server builds do not require Node. UI tests use Node 24, also required by the optional desktop app.

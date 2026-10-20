@@ -1,5 +1,7 @@
 # Code of conduct
 
+[English](CODE_OF_CONDUCT.md) | [简体中文](docs/zh-CN/CODE_OF_CONDUCT.md)
+
 We welcome contributors of all backgrounds and experience levels. Be respectful, patient, and specific. Critique ideas and code, give useful context, and respect different communication styles. Questions in any language are welcome.
 
 Harassment, discrimination, threats, sexualized conduct, personal attacks, and publishing another person's private information are unacceptable. This policy applies to project issues, pull requests, reviews, and other project spaces.

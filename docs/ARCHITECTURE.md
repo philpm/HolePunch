@@ -1,5 +1,7 @@
 # Public architecture
 
+[English](ARCHITECTURE.md) | [简体中文](zh-CN/ARCHITECTURE.md)
+
 See [EDITIONS](EDITIONS.md) for repository dependencies and version boundaries.
 
 | Directory | Responsibility |

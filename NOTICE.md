@@ -1,5 +1,7 @@
 # Third-party notices
 
+[English](NOTICE.md) | [简体中文](docs/zh-CN/NOTICE.md)
+
 - [rathole 0.5.0](https://github.com/rathole-org/rathole/tree/v0.5.0): Apache-2.0. Copyright Yujia Qiao and contributors. `scripts/patch-rathole.py` adjusts build metadata, terminal detection, dependencies, and supported features, and expands the UDP receive buffer from 2048 to 65507 bytes without changing wire framing. The downstream version is `0.5.0-holepunch.2`.
 - [Caddy](https://github.com/caddyserver/caddy): Apache-2.0. Runs separately and is not linked into the HolePunch server binary.
 - [Tauri](https://github.com/tauri-apps/tauri): MIT / Apache-2.0. Used by the optional desktop runtime and plugins.

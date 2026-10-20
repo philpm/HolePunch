@@ -1,5 +1,7 @@
 # CLI manual
 
+[English](CLI.md) | [简体中文](zh-CN/CLI.md)
+
 The CLI in `apps/cli` shares `crates/client-core` and connects to Self-hosted or Cloud using the same command; only the `--server` URL changes. It is the client itself, so no desktop app is required. Every device hosting a tunneled service needs a continuously running client process.
 
 ## Install and connect

@@ -1,5 +1,7 @@
 # Security and trust boundaries
 
+[English](SECURITY.md) | [简体中文](docs/zh-CN/SECURITY.md)
+
 ## Identity and administration
 
 Self-hosted initializes one administrator with email/password authentication. Sessions use HttpOnly, Secure, SameSite=Strict cookies; writes require CSRF validation. Password changes and session revocation are supported. Public registration, email recovery, MFA, and multi-tenancy are not part of this product.

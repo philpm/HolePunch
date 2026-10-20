@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Check public source hygiene and local Markdown links without printing secrets."""
 import argparse
+import hashlib
 from pathlib import Path
 import re
 import subprocess
@@ -15,6 +16,10 @@ SECRET_PATTERNS = {
     ),
 }
 LINK = re.compile(r"!?\[[^\]\n]*\]\(([^)\n]+)\)")
+TRANSLATION = re.compile(
+    r"^<!-- translation-source: ([^\s;]+); source-sha256: ([0-9a-f]{64}) -->$",
+    re.MULTILINE,
+)
 PRIVATE_DIRS = {"output", "target", "dist", "node_modules", "private", ".playwright-cli"}
 REQUIRED = (
     "README.md", "LICENSE", "NOTICE.md", "CONTRIBUTING.md", "SECURITY.md",
@@ -65,6 +70,16 @@ def check(root):
                 errors.append(f"{name}:{line}: possible {label}; value omitted")
         if path.suffix != ".md":
             continue
+        if name == "README-zh.md" or relative.parts[:2] == ("docs", "zh-CN"):
+            marker = TRANSLATION.search(text)
+            if marker is None:
+                errors.append(f"{name}: missing translation source revision")
+            else:
+                source = (root / marker.group(1)).resolve()
+                if not source.is_relative_to(root) or not source.is_file():
+                    errors.append(f"{name}: translation source is missing or outside the repository")
+                elif hashlib.sha256(source.read_bytes()).hexdigest() != marker.group(2):
+                    errors.append(f"{name}: English source changed; review and update the translation")
         for match in LINK.finditer(text):
             # Optional titles follow the target; this repository uses simple links.
             target = match.group(1).split(' "', 1)[0].strip("<>")

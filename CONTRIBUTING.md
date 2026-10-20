@@ -1,10 +1,12 @@
 # Contributing
 
+[English](CONTRIBUTING.md) | [简体中文](docs/zh-CN/CONTRIBUTING.md)
+
 Please submit focused changes and reproducible issues. Start with the [documentation](docs/README.md), [architecture](docs/ARCHITECTURE.md), and [security policy](SECURITY.md). Reports should include the version, platform, deployment method, reproduction steps, and redacted logs.
 
 ## Language and localization
 
-Use English for source comments, identifiers, documentation, commit/PR descriptions, CLI help, and diagnostics. English documentation is the source of truth. Non-English text belongs in locale catalogs or intentional Unicode test fixtures. Community members may ask questions in their preferred language; language fluency is not a prerequisite for contributing.
+Use English for source comments, identifiers, documentation, commit/PR descriptions, CLI help, and diagnostics. English documentation is the source of truth. Translated documentation belongs in `README-zh.md` and `docs/zh-CN/`; other non-English source text belongs in locale catalogs or intentional Unicode test fixtures. Community members may ask questions in their preferred language; language fluency is not a prerequisite for contributing.
 
 Every new web/GUI message must be localizable. Update English and Simplified Chinese catalogs together, preserve placeholders, and test both languages. Do not translate user-entered names, domains, API fields, commands, or raw logs. See the [localization guide](docs/I18N.md).
 

@@ -1,5 +1,7 @@
 # Self-hosted API v1
 
+[English](API.md) | [简体中文](zh-CN/API.md)
+
 This guide describes the current Self-hosted server. Except health probes, paths below use the `/api/v1` prefix. There is no open CORS policy. Request bodies are limited to 16 KiB. Application errors usually return `{"error":"English description"}`: 401 unauthenticated, 403 forbidden, 400 invalid input, 404 missing record, 409 conflict, 429 rate limited, or 502 edge failure. Framework parsing errors may be plain text. Error descriptions are human-readable diagnostics, not stable identifiers; clients should use HTTP status and operation context. GUI catalogs localize known messages and fall back to English for unknown diagnostics.
 
 ## Administrator sessions
@@ -112,4 +114,4 @@ Legacy Bearer admin tokens are not the current login flow. Explicit `HP_LEGACY_A
 
 `PUT /api/v1/setup` requires an administrator session and CSRF token. Body fields are `display_name`, `public_addr`, `domain_suffix`, and optional `current_password` / `password`. Validate all fields before committing profile, node address, suffix and completion state in one transaction. A password change checks the current password, invalidates existing sessions and returns `login_required: true`. Otherwise the current session remains valid. Configuration synchronization remains asynchronous (`status: pending`). Unknown fields are rejected.
 
-Fresh databases start pending. Existing databases with stored node configuration are marked complete when upgrading, preserving their settings. The guide can be reopened at any time. Cloud does not expose these endpoints.
+Fresh databases start pending. Existing databases with stored node configuration are marked complete when upgrading, preserving their settings. The guide can be reopened at any time. Ordinary Cloud members cannot use these administrator endpoints.

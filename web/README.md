@@ -1,5 +1,7 @@
 # Web assets
 
+[English](README.md) | [简体中文](../docs/zh-CN/WEB.md)
+
 - `portal.html`, `portal.js`, `portal.css`: current session-authenticated console. Capabilities select available features; the server enforces permissions.
 - `style.css`: base styles shared by current and compatibility pages.
 - `legacy/index.html`, `legacy/app.js`: compatibility token console, still served at `/legacy` and `/app.js` and used by historical uninitialized mode. Self-hosted defaults to the portal.

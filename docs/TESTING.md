@@ -1,5 +1,7 @@
 # Testing
 
+[English](TESTING.md) | [简体中文](zh-CN/TESTING.md)
+
 Use the commands and tool preparation steps in [Development](DEVELOPMENT.md). Run checks against the commit being reviewed; old acceptance reports are not evidence for a new release.
 
 | Area | Required checks |

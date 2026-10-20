@@ -1,5 +1,13 @@
 # Changelog
 
+[English](CHANGELOG.md) | [简体中文](docs/zh-CN/CHANGELOG.md)
+
+## Unreleased — bilingual documentation
+
+- Rewrite both project homepages around features, a complete quickstart, configuration, and contributor resources.
+- Add Simplified Chinese homepages and matching user, developer, and community guides with source revision checks.
+- Include translated documentation and project artwork in native archives.
+
 ## Unreleased — open-source maintenance
 
 - Adopt Apache-2.0 across both products and package metadata.
