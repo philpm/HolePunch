@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024" color="#587C31" role="img" aria-label="HolePunch">
+  <g fill="none" stroke="currentColor" stroke-width="52" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="512" cy="512" r="178"/>
+    <path d="M132 512H232A280 280 0 0 1 652 269.513"/>
+    <path d="M767.793 398.114A280 280 0 0 1 372 754.487M792 512H892"/>
+    <path d="M637.865 386.135L746 278M386.135 637.865L278 746"/>
+    <path d="M808 216L888 136M216 808L136 888"/>
+  </g>
+  <g fill="currentColor">
+    <circle cx="132" cy="512" r="66"/>
+    <circle cx="892" cy="512" r="66"/>
+  </g>
+</svg>

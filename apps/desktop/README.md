@@ -27,11 +27,22 @@ Release workflows build server/CLI archives by default and desktop installers on
 
 The [master logo](../../docs/assets/logo.png) represents two network nodes connected through a circular barrier, with diagonal strokes suggesting traversal. Its olive-green mark and white background are shared by both products, the browser console, and the desktop app. The master is a 1024 × 1024 PNG with an opaque square background, distributed under the repository's Apache-2.0 license.
 
-After replacing the master, regenerate the committed PNG, ICO, and ICNS assets with the installed Tauri CLI:
+Transparent variants use a geometric SVG redraw with concentric circles, circular arcs, and rounded strokes. The PNG exports match this vector geometry. All brand assets are covered by the same Apache-2.0 license.
+
+| Asset | Use |
+| --- | --- |
+| [Olive SVG](../../docs/assets/logo.svg) | Scalable mark on light backgrounds; editable vector source |
+| [Transparent olive PNG](../../docs/assets/logo-transparent.png) | 1024 × 1024 raster export with true alpha transparency |
+| [White SVG](../../docs/assets/logo-light.svg) | Scalable mark on dark or colored backgrounds |
+| [Transparent white PNG](../../docs/assets/logo-light.png) | 1024 × 1024 white raster export with true alpha transparency |
+
+SVGs contain native geometry with a `0 0 1024 1024` viewBox and no background, embedded bitmap, font, or external dependency. Preserve the square aspect ratio and clear space. For a custom color, change the root `color` attribute: shapes use `currentColor`. Inline SVG also accepts a CSS `color`; SVG loaded through `<img>` uses its own root color rather than the surrounding page's color. Use the white variant where olive has insufficient contrast.
+
+After replacing the opaque master or editing `docs/assets/logo.svg`, regenerate the committed PNG, ICO, ICNS, and transparent variants with the installed Tauri CLI:
 
 ```sh
 npm ci --prefix apps/desktop
 python3 scripts/sync-icons.py
 ```
 
-The script keeps only the required desktop and browser assets. The desktop build copies `web/logo.png` into its UI automatically. Rebuild the server and desktop app to embed updated icons. Copy the same master into the Cloud repository's `docs/assets/logo.png` when updating its core submodule.
+The script generates platform icons from `logo.png`, and the transparent PNGs and white SVG from `logo.svg`. The desktop build copies `web/logo.png` into its UI automatically. Rebuild the server and desktop app to embed updated icons. Copy all five logo assets into the Cloud repository's `docs/assets/` when updating its core submodule.
