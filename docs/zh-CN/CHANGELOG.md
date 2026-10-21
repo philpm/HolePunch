@@ -2,6 +2,14 @@
 
 [English](../../CHANGELOG.md) | 简体中文 · [文档目录](README.md)
 
+## 未发布 — CI 与依赖维护
+
+- 修复 Windows CRLF 文件的翻译源版本检查。
+- 将 TLS/QUIC 依赖更新至已修复漏洞的 Rustls 0.23.46、Quinn-proto 0.11.18、Rustls-webpki 0.103.16 和 Webpki-roots 1.0.10。
+- 更新加密和 TOML 依赖，保持旧密码哈希、令牌编码及 rathole 配置兼容。
+- 更新桌面工具和 GitHub Actions，合并兼容依赖 PR、避免重复 CI，并保留已验证的 Rust 基线。
+- 共享依赖审计支持下游仓库及明确指定的锁文件。
+
 ## 未发布 — 双语文档
 
 - 围绕特性、完整快速开始、配置和贡献资源重写两个项目首页。
@@ -61,4 +69,4 @@
 
 Axum 控制平面、SQLite 配置、TCP/UDP/Web 隧道、Caddy On-Demand TLS、rathole Noise 传输、Tauri 桌面与 CLI，以及初始集成测试。
 
-<!-- translation-source: CHANGELOG.md; source-sha256: e2de8366c32b3aaba94d20c676856ee0c6c8c56f9cf6bf1d8aac73a2cd07ba10 -->
+<!-- translation-source: CHANGELOG.md; source-sha256: 0db0ff797e0b654e3871c48708ec80321395b03aa2e8351ab19f903f813dfbdd -->

@@ -22,8 +22,12 @@
 
 审阅锁文件修改和上游许可证，执行相应测试，在[更新记录](CHANGELOG.md)记录用户可见变化。应用锁文件应提交以保证可复现。生成词条包也提交，使服务端不需要前端工具链；始终从源 JSON 生成。
 
+CI 对每次 PR 修订和 `main` 推送各运行一次，新修订会取消过时任务；需要单独重跑分支时使用 `workflow_dispatch`。Linux 服务端任务固定使用 Ubuntu 24.04，避免运行器镜像迁移静默改变构建环境。
+
+Dependabot 合并兼容的 Cargo/npm 更新及 Actions 更新，破坏性 Cargo/npm 升级单独审阅。Rust 编译器保留文档中的 1.91.1 基线；调整前需确认编译器已发布，并审阅最低支持版本。`dtolnay/rust-toolchain` 标签可能早于编译器发布，因此排除其自动版本标签升级。
+
 不要把 Actions 产物标为已发布稳定版本。上传发布文件前验证实际归档、校验和、版本、平台、许可证清单和安装流程。
 
 参考：[GitHub 仓库维护实践](https://docs.github.com/en/repositories/creating-and-managing-repositories/best-practices-for-repositories)、[Apache License 2.0](https://www.apache.org/licenses/LICENSE-2.0)。
 
-<!-- translation-source: docs/MAINTAINING.md; source-sha256: 6fcbc60635211adbd1aca505e1a9416cea77b3cc08acc416106ef25c599c8e98 -->
+<!-- translation-source: docs/MAINTAINING.md; source-sha256: cd02a59e17a0fe0263f4c1ca87d511523f89404241c8bf4f90a790d1b25894eb -->

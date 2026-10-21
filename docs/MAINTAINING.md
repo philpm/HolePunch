@@ -22,6 +22,10 @@ Verify the private reporting link in [Security](../SECURITY.md) before announcin
 
 Review lockfile updates and upstream licenses, run relevant tests, and record user-facing changes in [Changelog](../CHANGELOG.md). Commit lockfiles for reproducible application builds. Generated catalogs are committed so normal server builds need no frontend toolchain; regenerate them from the source JSON catalogs.
 
+CI runs once per pull-request revision and on pushes to `main`; new revisions cancel superseded runs. Use `workflow_dispatch` to rerun a branch explicitly. Linux server jobs use Ubuntu 24.04 so runner-image rollouts do not silently change the build environment.
+
+Dependabot groups compatible Cargo/npm updates and groups Actions updates, while keeping breaking Cargo/npm upgrades separate. The Rust compiler stays at the documented 1.91.1 baseline: update it deliberately after checking that the compiler is released and reviewing the minimum supported Rust version. `dtolnay/rust-toolchain` tags may exist before a compiler release, so automatic version-tag bumps are excluded.
+
 Never label an Actions artifact as a published stable release. Validate the actual archive, checksum, version, platform, license inventory, and installation flow before uploading release assets.
 
 References: [GitHub repository practices](https://docs.github.com/en/repositories/creating-and-managing-repositories/best-practices-for-repositories), [Apache License 2.0](https://www.apache.org/licenses/LICENSE-2.0).

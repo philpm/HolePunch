@@ -82,6 +82,20 @@ class RepositoryTests(unittest.TestCase):
             translation.write_text("# Missing source revision\n")
             self.assertTrue(any("missing translation source" in e for e in self.scan(root, ["README-zh.md"])))
 
+    def test_translation_marker_accepts_lf_and_crlf(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory).resolve()
+            self.prepare(root)
+            source = root / "README.md"
+            digest = hashlib.sha256(source.read_bytes()).hexdigest()
+            for newline in ("\n", "\r\n"):
+                with self.subTest(newline=repr(newline)):
+                    (root / "README-zh.md").write_bytes(
+                        (f"# Translation{newline}{newline}"
+                         f"<!-- translation-source: README.md; source-sha256: {digest} -->{newline}").encode("utf-8")
+                    )
+                    self.assertEqual(self.scan(root, ["README.md", "README-zh.md"]), [])
+
 
 if __name__ == "__main__":
     unittest.main()
