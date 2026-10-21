@@ -10,6 +10,7 @@
 - This development pre-release excludes signed desktop installers and published container images.
 
 - Handle Windows console-break shutdown in the native supervisor.
+- Fix Windows CLI log rotation and package license files with timestamps older than the ZIP format supports.
 
 ### CI and dependency maintenance
 

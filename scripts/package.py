@@ -4,6 +4,13 @@ import functools, argparse, hashlib, json, shutil, tarfile, tempfile, zipfile, s
 from pathlib import Path
 ROOT=Path(__file__).resolve().parent.parent
 
+def write_zip(stage, destination):
+    # Crate license files can have reproducible timestamps predating ZIP's 1980 epoch.
+    with zipfile.ZipFile(destination, 'w', zipfile.ZIP_DEFLATED, strict_timestamps=False) as archive:
+        for file in sorted(stage.rglob('*')):
+            if file.is_file():
+                archive.write(file, file.relative_to(stage.parent))
+
 @functools.lru_cache(maxsize=1)
 def version():
     metadata=json.loads(subprocess.check_output(['cargo','metadata','--locked','--no-deps','--format-version','1'],cwd=ROOT))
@@ -84,9 +91,7 @@ def main(edition="selfhost", shared_root=None, extra_files=None):
             shutil.copy2(source_file, stage/destination)
         if 'windows' in a.target:
             dest=a.out/(name+'.zip')
-            with zipfile.ZipFile(dest,'w',zipfile.ZIP_DEFLATED) as archive:
-                for file in sorted(stage.rglob('*')):
-                    if file.is_file():archive.write(file,file.relative_to(stage.parent))
+            write_zip(stage, dest)
         else:
             dest=a.out/(name+'.tar.gz')
             with tarfile.open(dest,'w:gz') as archive:archive.add(stage,arcname=name)

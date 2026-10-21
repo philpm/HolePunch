@@ -47,7 +47,12 @@ impl RollingLog {
             // Truncate in place after copying: portable on Windows where an open handle cannot be renamed.
             self.file.flush()?;
             std::fs::copy(&self.path, self.path.with_extension("log.1"))?;
-            self.file.set_len(0)?;
+            // Windows append-only handles cannot truncate a file. Keep append
+            // semantics for writes and use a separate write handle for rotation.
+            OpenOptions::new()
+                .write(true)
+                .open(&self.path)?
+                .set_len(0)?;
             self.size = 0;
         }
         self.file.write_all(bytes)?;
@@ -95,5 +100,13 @@ mod tests {
         }
         assert!(path.metadata().unwrap().len() <= LIMIT);
         assert!(path.with_extension("log.1").metadata().unwrap().len() <= LIMIT);
+        assert!(std::fs::read(&path)
+            .unwrap()
+            .iter()
+            .all(|byte| *byte == b'x'));
+        assert!(std::fs::read(path.with_extension("log.1"))
+            .unwrap()
+            .iter()
+            .all(|byte| *byte == b'x'));
     }
 }
