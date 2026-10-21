@@ -9,7 +9,7 @@ ROOT = Path(__file__).resolve().parents[1]
 
 
 def bundle():
-    catalogs = {p.stem: json.loads(p.read_text()) for p in sorted((ROOT / 'web/locales').glob('*.json'))}
+    catalogs = {p.stem: json.loads(p.read_text(encoding='utf-8')) for p in sorted((ROOT / 'web/locales').glob('*.json'))}
     english = catalogs['en']
     if any(key != value for key, value in english.items()):
         raise ValueError('English catalog values must equal their source message keys')
@@ -35,10 +35,10 @@ def main():
     path = ROOT / 'web/locales/catalogs.js'
     content = bundle()
     if args.check:
-        if not path.exists() or path.read_text() != content:
+        if not path.exists() or path.read_text(encoding='utf-8') != content:
             raise SystemExit('Run python3 scripts/sync-i18n.py to update the catalog bundle')
     else:
-        path.write_text(content)
+        path.write_bytes(content.encode('utf-8'))
     print('UI catalogs validated')
 
 

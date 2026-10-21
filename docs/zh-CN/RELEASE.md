@@ -16,7 +16,7 @@ python3 scripts/package.py --target aarch64-apple-darwin --bin-dir target/releas
 
 产物为 `holepunch-selfhost-<version>-<target>.tar.gz`（Windows 为 ZIP）和 `.sha256`。归档包括服务端、CLI、rathole、可移植安装器/运行器、共享 `access.py`、独立 `setup.py`/`compose.py`、Shell/PowerShell 入口、发布版 Compose、Caddy 启动配置、中英文文档、systemd 模板、许可证清单和构建元数据。Caddy 由安装器下载校验或通过 `--caddy` 提供，桌面单独发布。
 
-归档中的服务端安装名兼容为 `bin/holepunch-center`，实际来自 `holepunch-server`。`BUILD.json` 记录版本类型、schema、核心提交和版本号，不能只凭可执行文件名判断版本。应从已提交的干净仓库发布，保证记录与内容一致。
+归档中的服务端安装名兼容为 `bin/holepunch-center`，实际来自 `holepunch-server`。`BUILD.json` 记录版本类型、schema、产品源码提交、核心提交和版本号，不能只凭可执行文件名判断版本。应从已提交的干净仓库发布，保证记录与内容一致。
 
 ```sh
 shasum -a 256 -c holepunch-selfhost-0.4.0-dev.1-aarch64-apple-darwin.tar.gz.sha256
@@ -27,7 +27,7 @@ tar -xzf holepunch-selfhost-0.4.0-dev.1-aarch64-apple-darwin.tar.gz
 
 ## 工作流与桌面
 
-手动 `.github/workflows/release.yml` 构建 Linux x64/ARM64、Windows x64、macOS ARM64/x64 归档及 Linux amd64 OCI 镜像文件。它上传 Actions 产物，不会自动创建 GitHub Release 或推送镜像。桌面安装包还需要 `include_desktop`、平台验收和签名。
+手动 `.github/workflows/release.yml` 构建 Linux x64/ARM64、Windows x64、macOS ARM64/x64 归档及 Linux amd64 OCI 镜像文件。每个原生任务先验证实际归档，并上传不含凭据的 `validation-<target>.json` 报告。它上传 Actions 产物，不会自动创建 GitHub Release 或推送镜像。桌面安装包还需要 `include_desktop`、平台验收和签名。
 
 `deploy/compose.release.yml` 必须使用真实发布的镜像前缀和固定版本，不应填写不存在的镜像。Cloud 有独立开源发布流程，Self-hosted 归档不含 SaaS 实现。
 
@@ -62,4 +62,17 @@ python3 scripts/audit-dependencies.py --allow-informational
 
 工作流文件不能证明远端 CI 已运行。对应检查完成后，才能提升发布状态。
 
-<!-- translation-source: docs/RELEASE.md; source-sha256: 50c2d86aaa1115e88d63ab4655690cd230fe0159227b0ef7c4792680176bd425 -->
+
+## 原生归档验收
+
+发布流程验证 SHA256、产品/核心提交、二进制版本、版本类型、许可证清单、中英文文档和归档内独立工具。随后在临时目录安装，启动三个进程，登录并重启，确认凭据保留及退出后端口释放。Windows 使用控制台中断，POSIX 使用 SIGTERM。Caddy 按固定上游校验和下载，不安装系统服务。
+
+```sh
+python3 tests/smoke-native.py --dist dist
+# After publication, verify the actual download and version-based installation:
+python3 tests/smoke-native.py --release-version v0.4.0-dev.1
+```
+
+归档同时附带 `SHA256SUMS`、相邻 `.sha256` 和中英文发布说明。生产验收完成前保持 **Pre-release**。原生冒烟不能证明公网 CA 签发、真实 SMTP 投递、生产迁移、持续负载或桌面签名/公证已通过；发布说明应列明尚未验证的范围。
+
+<!-- translation-source: docs/RELEASE.md; source-sha256: 067d24eb87cb40341e36768702ece891cb35af3d10f79f15d2da2f7c41728402 -->
