@@ -121,10 +121,12 @@ mod tests {
             .unwrap()
             .map(|entry| entry.unwrap().path())
             .find(|path| {
-                path.file_name()
-                    .unwrap()
-                    .to_string_lossy()
-                    .starts_with("before-restore-")
+                path.extension().is_some_and(|extension| extension == "db")
+                    && path
+                        .file_name()
+                        .unwrap()
+                        .to_string_lossy()
+                        .starts_with("before-restore-")
             })
             .unwrap();
         assert_eq!(
