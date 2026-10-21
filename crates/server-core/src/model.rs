@@ -9,8 +9,29 @@ pub fn secret() -> String {
     bytes.iter().map(|b| format!("{b:02x}")).collect()
 }
 pub fn hash(value: &str) -> String {
-    format!("{:x}", Sha256::digest(value.as_bytes()))
+    Sha256::digest(value.as_bytes())
+        .iter()
+        .map(|byte| format!("{byte:02x}"))
+        .collect()
 }
+
+#[cfg(test)]
+mod hash_tests {
+    use super::hash;
+
+    #[test]
+    fn stored_token_hashes_keep_lowercase_sha256_encoding() {
+        assert_eq!(
+            hash(""),
+            "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        );
+        assert_eq!(
+            hash("abc"),
+            "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad"
+        );
+    }
+}
+
 pub fn domain(value: &str) -> Result<String, String> {
     let v = value.trim().trim_end_matches('.').to_ascii_lowercase();
     if v.len() > 253

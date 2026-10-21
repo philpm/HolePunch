@@ -1,9 +1,6 @@
-//! Shared identity, ownership and resource API. SaaS endpoints live in the separate private Cloud repository.
+//! Shared identity, ownership and resource API. SaaS endpoints live in the separate Cloud repository.
 use crate::*;
-use argon2::{
-    password_hash::{rand_core::OsRng, PasswordHash, SaltString},
-    Argon2, PasswordHasher, PasswordVerifier,
-};
+use argon2::{password_hash::phc::PasswordHash, Argon2, PasswordHasher, PasswordVerifier};
 use rusqlite::OptionalExtension;
 use serde::Serialize;
 
@@ -40,7 +37,7 @@ fn password(raw: &str) -> ApiResult<String> {
         return Err(bad("Password must be 12–256 bytes"));
     }
     Argon2::default()
-        .hash_password(raw.as_bytes(), &SaltString::generate(&mut OsRng))
+        .hash_password(raw.as_bytes())
         .map(|p| p.to_string())
         .map_err(|_| bad("Password processing failed"))
 }
@@ -1036,6 +1033,37 @@ pub fn routes() -> Router<App> {
 #[cfg(test)]
 mod migration_tests {
     use super::*;
+
+    #[test]
+    fn passwords_keep_phc_compatibility_and_random_salts() {
+        // Argon2id vector also verified by argon2 0.5.3's PHC tests.
+        let legacy = PasswordHash::new(
+            "$argon2id$v=19$m=65536,t=2,p=1$c29tZXNhbHQ$CTFhFdXPJO1aFaMaO6Mm5c8y7cJHAph8ArZWb2GRPPc",
+        )
+        .unwrap();
+        assert!(Argon2::default()
+            .verify_password(b"password", &legacy)
+            .is_ok());
+        assert!(Argon2::default()
+            .verify_password(b"incorrect", &legacy)
+            .is_err());
+
+        let raw = "local-compatibility-test-password";
+        let first = password(raw).unwrap();
+        let second = password(raw).unwrap();
+        assert_ne!(first, second);
+        for encoded in [first, second] {
+            assert!(encoded.starts_with("$argon2id$v=19$m=19456,t=2,p=1$"));
+            let parsed = PasswordHash::new(&encoded).unwrap();
+            assert!(Argon2::default()
+                .verify_password(raw.as_bytes(), &parsed)
+                .is_ok());
+            assert!(Argon2::default()
+                .verify_password(b"incorrect", &parsed)
+                .is_err());
+        }
+    }
+
     #[test]
     fn bootstrap_preserves_legacy_credentials_and_adds_limits_once() {
         let d = tempfile::tempdir().unwrap();

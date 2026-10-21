@@ -3,16 +3,35 @@ updates:
   - package-ecosystem: cargo
     directory: /
     schedule: {interval: weekly}
-    open-pull-requests-limit: 5
+    open-pull-requests-limit: 3
+    groups:
+      compatible-rust:
+        patterns: ["*"]
+        update-types: [minor, patch]
   - package-ecosystem: cargo
     directory: /apps/desktop/src-tauri
     schedule: {interval: weekly}
-    open-pull-requests-limit: 5
+    open-pull-requests-limit: 3
+    groups:
+      compatible-rust:
+        patterns: ["*"]
+        update-types: [minor, patch]
   - package-ecosystem: github-actions
     directory: /
     schedule: {interval: weekly}
-    open-pull-requests-limit: 5
+    open-pull-requests-limit: 3
+    groups:
+      actions:
+        patterns: ["*"]
+    # Rust version tags can exist before the corresponding compiler is released.
+    # Update the compiler deliberately alongside the documented MSRV.
+    ignore:
+      - dependency-name: dtolnay/rust-toolchain
   - package-ecosystem: npm
     directory: /apps/desktop
     schedule: {interval: weekly}
-    open-pull-requests-limit: 5
+    open-pull-requests-limit: 3
+    groups:
+      desktop-tooling:
+        patterns: ["*"]
+        update-types: [minor, patch]

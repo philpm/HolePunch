@@ -2,6 +2,14 @@
 
 [English](CHANGELOG.md) | [简体中文](docs/zh-CN/CHANGELOG.md)
 
+## Unreleased — CI and dependency maintenance
+
+- Fix translation revision checks for Windows CRLF files.
+- Update TLS/QUIC dependencies to patched Rustls 0.23.46, Quinn-proto 0.11.18, Rustls-webpki 0.103.16, and Webpki-roots 1.0.10.
+- Update cryptography and TOML dependencies while preserving existing password hashes, token encodings, and rathole configuration compatibility.
+- Update desktop tooling and GitHub Actions; group compatible dependency PRs, avoid duplicate CI runs, and retain the tested Rust baseline.
+- Allow the shared dependency audit to check a downstream repository and explicit lockfiles.
+
 ## Unreleased — bilingual documentation
 
 - Rewrite both project homepages around features, a complete quickstart, configuration, and contributor resources.

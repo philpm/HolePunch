@@ -17,7 +17,7 @@ SECRET_PATTERNS = {
 }
 LINK = re.compile(r"!?\[[^\]\n]*\]\(([^)\n]+)\)")
 TRANSLATION = re.compile(
-    r"^<!-- translation-source: ([^\s;]+); source-sha256: ([0-9a-f]{64}) -->$",
+    r"^<!-- translation-source: ([^\s;]+); source-sha256: ([0-9a-f]{64}) -->\r?$",
     re.MULTILINE,
 )
 PRIVATE_DIRS = {"output", "target", "dist", "node_modules", "private", ".playwright-cli"}
