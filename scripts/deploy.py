@@ -409,7 +409,10 @@ def run(prefix):
         return process
     def stop_requested(signum, frame):
         raise KeyboardInterrupt
-    previous = {s: signal.signal(s, stop_requested) for s in (signal.SIGINT, signal.SIGTERM)}
+    signals = [signal.SIGINT, signal.SIGTERM]
+    if os.name == 'nt':
+        signals.append(signal.SIGBREAK)
+    previous = {s: signal.signal(s, stop_requested) for s in signals}
     try:
         launch('caddy', 'run', '--config', prefix / 'state/caddy.json')
         center = launch('holepunch-center')

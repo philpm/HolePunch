@@ -2,7 +2,16 @@
 
 [English](CHANGELOG.md) | [简体中文](docs/zh-CN/CHANGELOG.md)
 
-## Unreleased — CI and dependency maintenance
+## 0.4.0-dev.1 — First public pre-release
+
+- Publish portable server/CLI archives for Linux x64/ARM64, macOS x64/ARM64, and Windows x64 with SHA256 checksums.
+- Verify the packaged installer, binary versions, login, restart, retained credentials, and shutdown on each target platform.
+- Record both product and shared-core source revisions in release metadata.
+- This development pre-release excludes signed desktop installers and published container images.
+
+- Handle Windows console-break shutdown in the native supervisor.
+
+### CI and dependency maintenance
 
 - Fix translation revision checks for Windows CRLF files.
 - Update TLS/QUIC dependencies to patched Rustls 0.23.46, Quinn-proto 0.11.18, Rustls-webpki 0.103.16, and Webpki-roots 1.0.10.
@@ -10,36 +19,36 @@
 - Update desktop tooling and GitHub Actions; group compatible dependency PRs, avoid duplicate CI runs, and retain the tested Rust baseline.
 - Allow the shared dependency audit to check a downstream repository and explicit lockfiles.
 
-## Unreleased — bilingual documentation
+### bilingual documentation
 
 - Rewrite both project homepages around features, a complete quickstart, configuration, and contributor resources.
 - Add Simplified Chinese homepages and matching user, developer, and community guides with source revision checks.
 - Include translated documentation and project artwork in native archives.
 
-## Unreleased — open-source maintenance
+### open-source maintenance
 
 - Adopt Apache-2.0 across both products and package metadata.
 - Publish contributor, support, conduct, localization, and maintenance guides.
 - Consolidate product documentation and remove internal acceptance diaries from public history.
 - Check repository hygiene and documentation links in CI; retain English/Simplified Chinese validation.
 
-## Unreleased — first-run experience
+### first-run experience
 
 - Make language switching visible in both sign-in and console headers.
 - Add an authenticated four-step administrator setup guide shared by both editions with persistent completion, atomic configuration updates and optional administrator password replacement.
 - Show deployment access URLs and initial credentials after native installation or Compose readiness; save protected summaries and support `--hide-secrets` for automation.
 - Explain client enrollment separately from administrator API tokens, public DNS/firewall requirements and existing-site coexistence.
 
-## Unreleased — deployment tooling
+### deployment tooling
 
 - Add an interactive native installer with source/archive/release inputs, private configuration, checksum verification, port conflict checks and a shared process supervisor.
 - Add Linux systemd installation, shell/PowerShell entry points, portable Python sidecar builds and Linux ARM64 release artifact configuration.
 - Document native installation, clone/build/run and Linux Docker Compose as three distinct deployment paths.
 - Fix administrator bootstrap credentials in release Compose and support consistent custom listener ports in both Compose variants.
-- Add portable deployment regression tests and a real native lifecycle smoke; public release downloads/images remain pending publication.
+- Add portable deployment regression tests and a real native lifecycle smoke; container images remain pending publication.
 
 
-## 0.4.0-dev.1 — Self-hosted development
+### Self-hosted features
 
 - Separated the public core, Self-hosted server and shared CLI from the private Cloud repository; desktop remains optional.
 - Added administrator password sessions, single-use CLI enrollment, own domains, random subdomains and optional per-tunnel bandwidth limits; no traffic accounting.

@@ -64,7 +64,8 @@ def main(edition="selfhost", shared_root=None, extra_files=None):
                         shutil.copy2(file,dest/file.name)
         (stage/'DEPENDENCIES.json').write_text(json.dumps(inventories,indent=2)+'\n')
         core_revision=subprocess.check_output(['git','rev-parse','HEAD'],cwd=shared,text=True).strip()
-        (stage/'BUILD.json').write_text(json.dumps({'version':version(),'target':a.target,'rathole':'0.5.0-holepunch.2','schema':4,'edition':a.edition,'server_binary':server,'core_revision':core_revision},indent=2)+'\n')
+        source_revision=subprocess.check_output(['git','rev-parse','HEAD'],cwd=ROOT,text=True).strip()
+        (stage/'BUILD.json').write_text(json.dumps({'version':version(),'target':a.target,'rathole':'0.5.0-holepunch.2','schema':4,'edition':a.edition,'server_binary':server,'core_revision':core_revision,'source_revision':source_revision},indent=2)+'\n')
         repro=stage/'build-inputs';repro.mkdir()
         for src,name_ in [(ROOT/'Cargo.lock','core.Cargo.lock'),(shared/'deploy/rathole.Cargo.lock','rathole.Cargo.lock'),(shared/'scripts/patch-rathole.py','patch-rathole.py'),(shared/'scripts/prepare-sidecar.sh','prepare-sidecar.sh'),(shared/'scripts/build-rathole.py','build-rathole.py'),(shared/'scripts/deploy.py','deploy.py'),(shared/'scripts/access.py','access.py')]:
             shutil.copy2(src,repro/name_)

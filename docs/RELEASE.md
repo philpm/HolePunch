@@ -16,7 +16,7 @@ python3 scripts/package.py --target aarch64-apple-darwin --bin-dir target/releas
 
 Outputs are `holepunch-selfhost-<version>-<target>.tar.gz` (zip on Windows) and `.sha256`. Archives contain server, CLI, rathole, the portable installer/runner, shared `access.py` summary helper, standalone `setup.py`/`compose.py` launch tools and shell/PowerShell entry points, release Compose and Caddy bootstrap files, English/Simplified Chinese documentation, systemd templates, license inventories, and build metadata. Caddy is downloaded and checksum-verified by the installer or supplied with `--caddy`; desktop is separate.
 
-The archived server uses the compatibility installation name `bin/holepunch-center` but is built from `holepunch-server`. `BUILD.json` records edition, schema, public core revision, and version; do not infer the product from the executable name alone. Release from a clean committed checkout so recorded revision and content agree.
+The archived server uses the compatibility installation name `bin/holepunch-center` but is built from `holepunch-server`. `BUILD.json` records edition, schema, product source revision, public core revision, and version; do not infer the product from the executable name alone. Release from a clean committed checkout so recorded revision and content agree.
 
 ```sh
 shasum -a 256 -c holepunch-selfhost-0.4.0-dev.1-aarch64-apple-darwin.tar.gz.sha256
@@ -27,7 +27,7 @@ See [deployment](DEPLOYMENT.md) for installation, upgrades, backups, and rollbac
 
 ## Workflows and desktop
 
-Manual `.github/workflows/release.yml` builds Linux x64/ARM64, Windows x64, macOS ARM64/x64 archives and Linux amd64 OCI image files. It uploads Actions artifacts; it does not automatically publish a GitHub Release or push images. Desktop installers require `include_desktop`, platform acceptance, and signing.
+Manual `.github/workflows/release.yml` builds Linux x64/ARM64, Windows x64, macOS ARM64/x64 archives and Linux amd64 OCI image files. Each native job exercises the actual archive before uploading a sanitized `validation-<target>.json` report. It uploads Actions artifacts; it does not automatically publish a GitHub Release or push images. Desktop installers require `include_desktop`, platform acceptance, and signing.
 
 `deploy/compose.release.yml` requires a real published image prefix and pinned version. Do not point it at nonexistent images. Cloud has an independent open-source release process; public archives contain no SaaS implementation.
 
@@ -61,3 +61,15 @@ The tool scans current public, desktop, and rathole lockfiles and writes ignored
 - Review source and Git history before publication and establish private vulnerability reporting. Exclude runtime credentials, databases, and private operations material from artifacts.
 
 A workflow file does not prove remote CI ran. Promote release status only after the corresponding checks finish.
+
+## Native archive acceptance
+
+The release workflow verifies SHA256, product/core revisions, binary versions, edition, license inventory, bilingual documentation and standalone packaged tools. It then installs into a temporary directory, starts all three processes, logs in, restarts with the same credentials, and verifies shutdown releases the listeners. Windows uses a console break; POSIX uses SIGTERM. Caddy is downloaded using its pinned upstream checksums. No system service is installed.
+
+```sh
+python3 tests/smoke-native.py --dist dist
+# After publication, verify the actual download and version-based installation:
+python3 tests/smoke-native.py --release-version v0.4.0-dev.1
+```
+
+Publish `SHA256SUMS`, adjacent `.sha256` files and bilingual release notes alongside the archives. Keep the release marked **Pre-release** until production acceptance is complete. The native smoke is not evidence of public CA issuance, real-provider SMTP delivery, production migrations, sustained load, or desktop signing/notarization; disclose unverified areas in the release notes.

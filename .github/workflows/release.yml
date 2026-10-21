@@ -47,6 +47,8 @@ jobs:
         run: npm run build --prefix apps/desktop -- --bundles ${{ matrix.bundles }}
       - name: Portable binaries and third-party inventory
         run: python scripts/package.py --target ${{ matrix.target }} --bin-dir target/release --rathole apps/desktop/src-tauri/binaries/holepunch-rathole-${{ matrix.target }}${{ matrix.ext }} --out dist
+      - name: Verify packaged installation on the target platform
+        run: python tests/smoke-native.py --dist dist --expected-revision ${{ github.sha }} --report dist/validation-${{ matrix.target }}.json
       - name: Collect installers and checksums
         if: inputs.include_desktop
         shell: python
