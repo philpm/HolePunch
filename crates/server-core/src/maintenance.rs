@@ -51,7 +51,11 @@ pub fn backup(source: &Path, dest: &Path) -> Result<()> {
         )?;
         drop(target);
         checked(dest)?;
-        File::open(dest)?.sync_all()?;
+        FileOptions::new()
+            .write(true)
+            .open(dest)?
+            .sync_all()
+            .context("Syncing completed backup")?;
         Ok(())
     })();
     if result.is_err() {
@@ -101,6 +105,38 @@ mod tests {
         assert!(restore(&restore_dir, &dest).is_err());
         drop(lock);
         restore(&restore_dir, &dest).unwrap();
+        assert_eq!(
+            crate::store::Store::open(&restore_dir.join("holepunch.db"))
+                .unwrap()
+                .get("hello")
+                .unwrap()
+                .as_deref(),
+            Some("persisted")
+        );
+        let restored = crate::store::Store::open(&restore_dir.join("holepunch.db")).unwrap();
+        restored.set("hello", "changed").unwrap();
+        drop(restored);
+        restore(&restore_dir, &dest).unwrap();
+        let previous = std::fs::read_dir(&restore_dir)
+            .unwrap()
+            .map(|entry| entry.unwrap().path())
+            .find(|path| {
+                path.extension().is_some_and(|extension| extension == "db")
+                    && path
+                        .file_name()
+                        .unwrap()
+                        .to_string_lossy()
+                        .starts_with("before-restore-")
+            })
+            .unwrap();
+        assert_eq!(
+            crate::store::Store::open(&previous)
+                .unwrap()
+                .get("hello")
+                .unwrap()
+                .as_deref(),
+            Some("changed")
+        );
         assert_eq!(
             crate::store::Store::open(&restore_dir.join("holepunch.db"))
                 .unwrap()

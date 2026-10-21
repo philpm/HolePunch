@@ -10,6 +10,7 @@
 - 此开发预发布不含已签名桌面安装包和公开容器镜像。
 
 - 原生进程监督器支持 Windows 控制台中断退出。
+- 修复 Windows CLI 日志轮转和数据库备份同步，并支持打包时间戳早于 ZIP 格式下限的许可证文件。
 
 ### CI 与依赖维护
 
@@ -78,4 +79,4 @@
 
 Axum 控制平面、SQLite 配置、TCP/UDP/Web 隧道、Caddy On-Demand TLS、rathole Noise 传输、Tauri 桌面与 CLI，以及初始集成测试。
 
-<!-- translation-source: CHANGELOG.md; source-sha256: dc512a23b13150a019fba10f9714313f5e3f0f189b9e00cd8b0715e0f0407a59 -->
+<!-- translation-source: CHANGELOG.md; source-sha256: f3ba750afa1c0f1a61ee8c8435b2197baf04ed67fe2220dc943796faf651e790 -->
